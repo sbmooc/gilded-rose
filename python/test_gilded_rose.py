@@ -1,9 +1,9 @@
-import unittest
+from unittest import TestCase
 
 from gilded_rose import Item, GildedRose
 
 
-class TestAgedBrie(unittest.TestCase):
+class TestAgedBrie(TestCase):
 
     def setUp(self):
         self.aged_brie = Item('Aged Brie', None, None)
@@ -30,7 +30,7 @@ class TestAgedBrie(unittest.TestCase):
         assert self.aged_brie.quality == 50
 
 
-class TestSulfuras(unittest.TestCase):
+class TestSulfuras(TestCase):
 
     def setUp(self):
         self.sulfuras = Item('Sulfuras, Hand of Ragnaros', 10, 10)
@@ -42,7 +42,7 @@ class TestSulfuras(unittest.TestCase):
         assert self.sulfuras.quality == 10
 
 
-class TestBackStagePasses(unittest.TestCase):
+class TestBackStagePasses(TestCase):
 
     def setUp(self):
         self.backstage_pass = Item('Backstage passes to a TAFKAL80ETC concert', 0, 0)
@@ -77,7 +77,21 @@ class TestBackStagePasses(unittest.TestCase):
         assert self.backstage_pass.quality == 50
 
 
-class TestGenericItems(unittest.TestCase):
+class TestConjuredItems(TestCase):
+
+    def setUp(self):
+        self.conjured_item = Item('Conjured Item', 10, 10)
+        self.gilded_rose = GildedRose([self.conjured_item, ])
+
+    def test_conjured_item_degrades_twice_as_fast(self):
+        self.gilded_rose.update_quality()
+        assert self.conjured_item.quality == 8
+        self.conjured_item.sell_in = 0
+        self.gilded_rose.update_quality()
+        assert self.conjured_item == 6
+
+
+class TestGenericItems(TestCase):
 
     def setUp(self):
         self.generic_item = Item('Test Item', 10, 10)
@@ -99,7 +113,3 @@ class TestGenericItems(unittest.TestCase):
         self.gilded_rose.update_quality()
         assert self.generic_item.quality == 2
         assert self.generic_item.sell_in == -1
-
-
-if __name__ == '__main__':
-    unittest.main()
