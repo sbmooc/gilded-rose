@@ -1,5 +1,6 @@
+import operator
 from math import inf
-from typing import Set, Union, List
+from typing import Union, List
 
 
 class QualityChange:
@@ -18,47 +19,60 @@ class QualityChange:
         self.quality_change = quality_change
 
 
+class ItemRulesNotValid(BaseException):
+    pass
+
+
 class ItemRules:
     def __init__(
-        self, quality_change_rules: Set[QualityChange], sell_by_rate_decrease: int
+        self, quality_change_rules: List[QualityChange], sell_by_rate_decrease: int
     ):
         self.quality_change_rules = quality_change_rules
         self.sell_by_rate_decrease = sell_by_rate_decrease
+        self._sort_and_validate_rules()
+
+    def _sort_and_validate_rules(self):
+        self.quality_change_rules.sort(key=operator.attrgetter('min_sell_by'))
+        if self.quality_change_rules[0].min_sell_by != -inf or self.quality_change_rules[-1].max_sell_by != inf:
+            raise ItemRulesNotValid
+        for index, rule in enumerate(self.quality_change_rules[:-1]):
+            if rule.max_sell_by != self.quality_change_rules[index+1].min_sell_by:
+                raise ItemRulesNotValid
 
 
 specific_item_rules = {
     "Aged Brie": ItemRules(
-        {
+        [
             QualityChange(-inf, 0, quality_change=2),
             QualityChange(0, inf, quality_change=1),
-        },
+        ],
         1,
     ),
     "Sulfuras, Hand of Ragnaros": ItemRules(
-        {QualityChange(-inf, inf, quality_change=0)}, 0
+        [QualityChange(-inf, inf, quality_change=0)], 0
     ),
     "Conjured Item": ItemRules(
-        {
+        [
             QualityChange(-inf, 0, quality_change=-4),
             QualityChange(0, inf, quality_change=-2),
-        },
+        ],
         1,
     ),
     "Backstage passes to a TAFKAL80ETC concert": ItemRules(
-        {
+        [
             QualityChange(-inf, 0, 0, set_quality=0),
             QualityChange(0, 5, quality_change=3),
             QualityChange(5, 10, quality_change=2),
             QualityChange(10, inf, quality_change=1),
-        },
+        ],
         1,
     ),
 }
 generic_item_rules = ItemRules(
-    {
+    [
         QualityChange(-inf, 0, quality_change=-2),
         QualityChange(0, inf, quality_change=-1),
-    },
+    ],
     1,
 )
 
