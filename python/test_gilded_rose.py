@@ -88,7 +88,7 @@ class TestConjuredItems(TestCase):
         assert self.conjured_item.quality == 8
         self.conjured_item.sell_in = 0
         self.gilded_rose.update_quality()
-        assert self.conjured_item == 6
+        assert self.conjured_item.quality == 4
 
 
 class TestGenericItems(TestCase):
