@@ -32,7 +32,45 @@ class TestAgedBrie(unittest.TestCase):
 
 
 class TestSulfuras(unittest.TestCase):
-    pass
+
+    def setUp(self):
+        self.sulfuras = Item('Sulfuras, Hand of Ragnaros', 10, 10)
+        self.gilded_rose = GildedRose([self.sulfuras, ])
+
+    def test_sulfuras_never_drop_in_quality_or_need_to_be_sold(self):
+        self.gilded_rose.update_quality()
+        assert self.sulfuras.sell_in == 10
+        assert self.sulfuras.quality == 10
+
+
+class TestBackStagePasses(unittest.TestCase):
+
+    def setUp(self):
+        self.backstage_pass = Item('Backstage passes to a TAFKAL80ETC concert', 0, 0)
+        self.gilded_rose = GildedRose([self.backstage_pass, ])
+
+    def test_back_stage_passes_increase_in_quality_at_normal_rate(self):
+        self.backstage_pass.sell_in = 11
+        self.backstage_pass.quality = 10
+        self.gilded_rose.update_quality()
+        assert self.backstage_pass.quality == 11
+
+    def test_back_stage_passes_increase_in_quality_at_faster_rate_close_to_concert(self):
+        self.backstage_pass.sell_in = 10
+        self.backstage_pass.quality = 10
+        self.gilded_rose.update_quality()
+        assert self.backstage_pass.quality == 12
+        self.backstage_pass.sell_in = 5
+        self.backstage_pass.quality = 5
+        self.gilded_rose.update_quality()
+        assert self.backstage_pass.quality == 8
+
+    def test_back_stage_passes_have_zero_quality_after_concert(self):
+        self.backstage_pass.sell_in = 0
+        self.backstage_pass.quality = 10
+        self.gilded_rose.update_quality()
+        assert self.backstage_pass.quality == 0
+
 
 class TestGenericItems(unittest.TestCase):
 
