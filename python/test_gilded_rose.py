@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 
 from gilded_rose import Item, GildedRose
@@ -24,8 +23,8 @@ class TestAgedBrie(unittest.TestCase):
         assert self.aged_brie.quality == 2
 
     def test_aged_brie_cannot_have_greater_than_50_quality(self):
-        self.aged_brie.quality = 50
-        self.aged_brie.sell_in = 10
+        self.aged_brie.quality = 49
+        self.aged_brie.sell_in = -2
         gilded_rose = GildedRose([self.aged_brie, ])
         gilded_rose.update_quality()
         assert self.aged_brie.quality == 50
@@ -70,6 +69,12 @@ class TestBackStagePasses(unittest.TestCase):
         self.backstage_pass.quality = 10
         self.gilded_rose.update_quality()
         assert self.backstage_pass.quality == 0
+
+    def test_back_stage_passes_quality_does_not_exceed_50(self):
+        self.backstage_pass.sell_in = 2
+        self.backstage_pass.quality = 49
+        self.gilded_rose.update_quality()
+        assert self.backstage_pass.quality == 50
 
 
 class TestGenericItems(unittest.TestCase):
