@@ -4,37 +4,35 @@ from gilded_rose import Item, GildedRose
 
 
 class TestAgedBrie(TestCase):
-
     def setUp(self):
-        self.aged_brie = Item('Aged Brie', None, None)
+        self.aged_brie = Item("Aged Brie", None, None)
 
     def test_aged_brie_increases_in_quality_prior_to_sell_by_date(self):
         self.aged_brie.quality = 0
         self.aged_brie.sell_in = 10
-        gilded_rose = GildedRose([self.aged_brie, ])
+        gilded_rose = GildedRose([self.aged_brie,])
         gilded_rose.update_quality()
         assert self.aged_brie.quality == 1
 
     def test_aged_brie_increases_faster_past_sell_by_date(self):
         self.aged_brie.quality = 0
         self.aged_brie.sell_in = 0
-        gilded_rose = GildedRose([self.aged_brie, ])
+        gilded_rose = GildedRose([self.aged_brie,])
         gilded_rose.update_quality()
         assert self.aged_brie.quality == 2
 
     def test_aged_brie_cannot_have_greater_than_50_quality(self):
         self.aged_brie.quality = 49
         self.aged_brie.sell_in = -2
-        gilded_rose = GildedRose([self.aged_brie, ])
+        gilded_rose = GildedRose([self.aged_brie,])
         gilded_rose.update_quality()
         assert self.aged_brie.quality == 50
 
 
 class TestSulfuras(TestCase):
-
     def setUp(self):
-        self.sulfuras = Item('Sulfuras, Hand of Ragnaros', 10, 10)
-        self.gilded_rose = GildedRose([self.sulfuras, ])
+        self.sulfuras = Item("Sulfuras, Hand of Ragnaros", 10, 10)
+        self.gilded_rose = GildedRose([self.sulfuras,])
 
     def test_sulfuras_never_drop_in_quality_or_need_to_be_sold(self):
         self.gilded_rose.update_quality()
@@ -43,10 +41,9 @@ class TestSulfuras(TestCase):
 
 
 class TestBackStagePasses(TestCase):
-
     def setUp(self):
-        self.backstage_pass = Item('Backstage passes to a TAFKAL80ETC concert', 0, 0)
-        self.gilded_rose = GildedRose([self.backstage_pass, ])
+        self.backstage_pass = Item("Backstage passes to a TAFKAL80ETC concert", 0, 0)
+        self.gilded_rose = GildedRose([self.backstage_pass,])
 
     def test_back_stage_passes_increase_in_quality_at_normal_rate(self):
         self.backstage_pass.sell_in = 11
@@ -54,7 +51,9 @@ class TestBackStagePasses(TestCase):
         self.gilded_rose.update_quality()
         assert self.backstage_pass.quality == 11
 
-    def test_back_stage_passes_increase_in_quality_at_faster_rate_close_to_concert(self):
+    def test_back_stage_passes_increase_in_quality_at_faster_rate_close_to_concert(
+        self,
+    ):
         self.backstage_pass.sell_in = 10
         self.backstage_pass.quality = 10
         self.gilded_rose.update_quality()
@@ -78,10 +77,9 @@ class TestBackStagePasses(TestCase):
 
 
 class TestConjuredItems(TestCase):
-
     def setUp(self):
-        self.conjured_item = Item('Conjured Item', 10, 10)
-        self.gilded_rose = GildedRose([self.conjured_item, ])
+        self.conjured_item = Item("Conjured Item", 10, 10)
+        self.gilded_rose = GildedRose([self.conjured_item,])
 
     def test_conjured_item_degrades_twice_as_fast(self):
         self.gilded_rose.update_quality()
@@ -92,10 +90,9 @@ class TestConjuredItems(TestCase):
 
 
 class TestGenericItems(TestCase):
-
     def setUp(self):
-        self.generic_item = Item('Test Item', 10, 10)
-        self.gilded_rose = GildedRose([self.generic_item, ])
+        self.generic_item = Item("Test Item", 10, 10)
+        self.gilded_rose = GildedRose([self.generic_item,])
 
     def test_sell_in_day_and_quality_decreases_by_one(self):
         self.gilded_rose.update_quality()
