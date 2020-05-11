@@ -1,6 +1,50 @@
+from math import inf
 from unittest import TestCase
 
-from gilded_rose import Item, GildedRose
+from gilded_rose import Item, GildedRose, ItemRulesNotValid, QualityChange, ItemRules
+
+
+class TestItemRules(TestCase):
+    def setUp(self):
+        self.quality_change_rule_after_sell_by = QualityChange(
+            min_sell_by=-inf, max_sell_by=0, quality_change=1
+        )
+        self.quality_change_rule_before_sell_by = QualityChange(
+            min_sell_by=0, max_sell_by=inf, quality_change=1
+        )
+
+    def test_not_infinite_at_start_or_beginning_is_invalid(self):
+        invalid_at_start_rules = [
+            QualityChange(min_sell_by=0, max_sell_by=inf, quality_change=1)
+        ]
+        with self.assertRaises(ItemRulesNotValid):
+            ItemRules(invalid_at_start_rules, 1)._sort_and_validate_rules()
+
+        invalid_at_end_rules = [
+            QualityChange(min_sell_by=-inf, max_sell_by=10, quality_change=1)
+        ]
+        with self.assertRaises(ItemRulesNotValid):
+            ItemRules(invalid_at_end_rules, 1)._sort_and_validate_rules()
+
+    def test_item_rules_correctly_sorted(self):
+        item_rules = ItemRules(
+            [
+                self.quality_change_rule_after_sell_by,
+                self.quality_change_rule_before_sell_by,
+            ],
+            1,
+        )
+        item_rules._sort_and_validate_rules()
+        item_rules.quality_change_rules[0] = self.quality_change_rule_before_sell_by
+
+    def test_gap_in_sell_by_date_raises_error(self):
+        item_rules = [
+            self.quality_change_rule_after_sell_by,
+            QualityChange(min_sell_by=0, max_sell_by=2),
+            QualityChange(min_sell_by=4, max_sell_by=inf),
+        ]
+        with self.assertRaises(ItemRulesNotValid):
+            ItemRules(item_rules, 1)._sort_and_validate_rules()
 
 
 class TestAgedBrie(TestCase):

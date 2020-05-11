@@ -8,13 +8,11 @@ class QualityChange:
         self,
         min_sell_by: Union[int, float],
         max_sell_by: Union[int, float],
-        quality_change_rate=None,
         quality_change=None,
         set_quality=None,
     ):
         self.min_sell_by = min_sell_by
         self.max_sell_by = max_sell_by
-        self.quality_change_rate = quality_change_rate
         self.set_quality = set_quality
         self.quality_change = quality_change
 
@@ -32,11 +30,14 @@ class ItemRules:
         self._sort_and_validate_rules()
 
     def _sort_and_validate_rules(self):
-        self.quality_change_rules.sort(key=operator.attrgetter('min_sell_by'))
-        if self.quality_change_rules[0].min_sell_by != -inf or self.quality_change_rules[-1].max_sell_by != inf:
+        self.quality_change_rules.sort(key=operator.attrgetter("min_sell_by"))
+        if (
+            self.quality_change_rules[0].min_sell_by != -inf
+            or self.quality_change_rules[-1].max_sell_by != inf
+        ):
             raise ItemRulesNotValid
         for index, rule in enumerate(self.quality_change_rules[:-1]):
-            if rule.max_sell_by != self.quality_change_rules[index+1].min_sell_by:
+            if rule.max_sell_by != self.quality_change_rules[index + 1].min_sell_by:
                 raise ItemRulesNotValid
 
 
