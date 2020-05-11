@@ -1,3 +1,10 @@
+Requires python3 but no external dependencis, so system python should work, or use a virtual environment
+
+To run test suite, run python -m unittest
+
+
+============================================================================
+
 Hi and welcome to team Gilded Rose.
 
 As you know, we are a small inn with a prime location in a prominent city ran
